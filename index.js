@@ -27,11 +27,19 @@ function processFirstItem(stringList, callback) {
  * Study the code for counter1 and counter2. Answer the questions below.
  * 
  * 1. What is the difference between counter1 and counter2?
+ *  
+ *    Counter1 has a function within another function. 
  * 
  * 2. Which of the two uses a closure? How can you tell?
  * 
+ *    counter1 uses closure, because the variable count cannot escape the function counterMaker, but the anonymous 
+ *    inner function has accessability to that variable.
+ * 
  * 3. In what scenario would the counter1 code be preferable? In what scenario would counter2 be better? 
  *
+ *    counter1 is useful if you would like to keep the variables exclusive to the function, it cannot be used
+ *    anywhere else, however with counter2 the opposite might be helpful where multiple funtions can access the 
+ *    count variable since it's in the global scope.
 */
 
 // counter1 code
@@ -54,7 +62,8 @@ function counter2() {
 
 /* Task 2: inning() 
 
-Write a function called `inning` that generates a random number of points that a team scored in an inning. This should be a whole number between 0 and 2. */
+Write a function called `inning` that generates a random number of points that a team scored in an inning. 
+This should be a whole number between 0 and 2. */
 
 function inning(){
 
@@ -66,7 +75,8 @@ console.log(inning());
 
 /* Task 3: finalScore()
 
-Write a higher order function called `finalScore` that accepts the callback function `inning` (from above) and a number of innings and and returns the final score of the game in the form of an object.
+Write a higher order function called `finalScore` that accepts the callback function `inning` (from above) 
+and a number of innings and and returns the final score of the game in the form of an object.
 
 For example, 
 
@@ -77,23 +87,48 @@ finalScore(inning, 9) might return:
 }
 
 */ 
+//  let homeTeamScore = 0;
+//  let awayTeamScore = 0;
 
-function finalScore(pointsPerInning, inningNumber){ 
-  let homeTeamScore = 0;
-  let awayTeamScore = 0;
-    for(let i = 0; i < inningNumber; i++){ 
-    homeTeamScore += pointsPerInning();
-    awayTeamScore += pointsPerInning();
-    
-  }
-    let teamScores =  `{
-    Home : ${homeTeamScore},
-    Away : ${awayTeamScore},
-  }`;
-  return teamScores;
- }
+// function finalScore(pointsPerInning, inningNumber){ 
  
- console.log(finalScore(inning, 9));
+//     for(let i = 0; i < inningNumber; i++){ 
+//     homeTeamScore += pointsPerInning();
+//     awayTeamScore += pointsPerInning();
+    
+//   }
+//   let teamScores =  {
+//     Home : homeTeamScore,
+//     Away : awayTeamScore,
+//   };
+//   return teamScores;
+//  }
+ 
+//  console.log(finalScore(inning, 9));
+function finalScore(pointsPerInning, inningNumber){
+
+  const teamScores = [];
+  
+  for(let i = 0; i < inningNumber; i++){
+    teamScores.push({Home : pointsPerInning(), Away : pointsPerInning()});
+  } 
+
+  return function addedScores(upTo){
+    let homeTeamScore = 0;
+    let awayTeamScore = 0;
+    for(let i = 0; i < upTo; i++){ 
+      homeTeamScore += teamScores[i].Home;
+      awayTeamScore += teamScores[i].Away;
+    }
+    let results =  {
+      Home : homeTeamScore,
+      Away : awayTeamScore,
+    };
+    return results;
+  }
+}
+ 
+ console.log(finalScore(inning, 9)());
 
 /* Task 4: 
 
@@ -117,20 +152,18 @@ and returns the score at each pont in the game, like so:
 
 Final Score: awayTeam - homeTeam */
 
+
+
 function scoreboard(cbInningScore, cbInning, inningNum) {
 
-
-  let homeTeamScore = 0;
-  let awayTeamScore = 0;
-
-  for(let i = 0; i < inningNum; i++){
-    homeTeamScore += cbInning();
-    awayTeamScore += cbInning();
-    console.log(`Inning ${i + 1} : Home - ${homeTeamScore} vs ${awayTeamScore} - Away`);
-
+  let addedScores = cbInningScore(cbInning, inningNum);
+  for(let i = 1; i <= inningNum; i++) {
+    let teamScores = addedScores(i);
+    console.log(`Inning ${i} : Home - ${teamScores.Home} vs ${teamScores.Away} - Away`);
+    if (i === inningNum) {
+      console.log(`Final Score : Home - ${teamScores.Home} vs ${teamScores.Away} - Away`);
+    }
   }
-  console.log(cbInningScore(inning, inningNum));
-  
 }
 scoreboard(finalScore, inning, 8);
 
