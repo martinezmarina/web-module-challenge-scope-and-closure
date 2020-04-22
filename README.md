@@ -43,8 +43,14 @@ Find the file `index.js` and complete the tasks.
 
 Edit the `ReadMe` file with your answers.
 
+<!-- 
 1. In your own words, define closure (1-2 sentences).
+
+  closure is the accessability of the variables of the outer function provided to the inner function. In other 
+  words, the inner function has access to variables within it's corresponding outer function.
+
 2. Study the following code, then answer the questions below.
+-->
 
 ```js
 function personalDice(name){
@@ -65,8 +71,18 @@ dansRoll();
 ```
 
 a. Where is closure used in this code? How can you tell?
+
+The anonymous inner function has access to the "name" variable pushed through the outer function's parameter.
+Closure is used here.
+
 b. Compare and contrast calling `dansRoll` the first and second time. What is always the same? What could change?
+
+It should return 2 strings which say "Dan rolled a (and a random number)", each roll will provide a different random number between 1 and 6.
+
 c. What is the lexical scope of `newRoll`? 
+
+'newRoll' cannot escape the inner function within the outer function called personalDice. It is only returned
+as a part of a string. 
 
 ### Task 3 - Stretch Goals
 
